@@ -1,43 +1,23 @@
-import React, { useState } from 'react';
+import { useState } from 'react'; // import useEffect
+import './App.css';
+import ContactInput from './ContactInput';
+import Contacts from './Contacts';
+import Header from './Header';
 
 function App() {
-    const [contacts, setContacts] = useState([]); // Array of contact objects
+    const [contacts, setContacts] = useState([]); // State to maintain contacts list
 
-    const handleCreateContact = (name) => {
-        // Logic to create a new contact
-    };
-
-    const handleAddPhoneNumber = (contactId, type, number) => {
-        // Logic to add a phone number to a contact
-    };
-
-    const handleDeletePhoneNumber = (contactId, phoneNumberId) => {
-        // Logic to delete a phone number from a contact
-    };
-
-    const handleDeleteContact = (contactId) => {
-        // Logic to delete a contact
+    const addContact = (name) => {
+        // Logic to add contact
+        // Here, you could also make an API call to POST the contact to your backend
+        setContacts([...contacts, { name, phones: [] }]);
     };
 
     return (
         <div>
-            <input type="text" placeholder="Name" />
-            <button onClick={() => handleCreateContact()}>Create Contact</button>
-
-            <div>
-                {contacts.map(contact => (
-                    <div key={contact.id}>
-                        <span>{contact.name}</span>
-                        <button onClick={() => handleDeleteContact(contact.id)}>Delete</button>
-                    </div>
-                ))}
-            </div>
-
-            {/* Show phone numbers and input fields when a contact is clicked */}
-
-            <button>Show Stats</button>
-
-            {/* Display stats when the Show Stats button is clicked */}
+            <Header />
+            <ContactInput addContact={addContact} />
+            <Contacts contacts={contacts} />
         </div>
     );
 }
