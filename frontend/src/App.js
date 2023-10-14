@@ -1,20 +1,28 @@
-import React, { useEffect, useState } from 'react'; // Make sure to import useEffect
+import React, { useState } from 'react'; // Make sure to import useEffect
 import './App.css';
 
 function App() {
-    const [contacts, setContacts] = useState([]); // State to maintain contacts list
+    const [contacts, setContacts] = useState([]);
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+    const [selectedContact, setSelectedContact] = useState(null);
 
-    useEffect(() => {
-        fetch('http://localhost/api/contacts')
-            .then(response => response.json())
-            .then(data => setContacts(data))
-            .catch(error => console.error('Error:', error));
-    }, []);
-
-    const addContact = (name) => {
-        // Logic to add contact
-        // Here, you could also make an API call to POST the contact to your backend
+    const handleAddContact = () => {
         setContacts([...contacts, { name, phones: [] }]);
+        setName("");
+    };
+
+    const handleAddPhone = () => {
+        const updatedContacts = [...contacts];
+        const contact = updatedContacts.find(c => c.name === selectedContact);
+        contact.phones.push(phone);
+        setContacts(updatedContacts);
+        setPhone("");
+    };
+
+    const handleDeleteContact = (name) => {
+        setContacts(contacts.filter(c => c.name !== name));
+        setSelectedContact(null);
     };
 
     return (
