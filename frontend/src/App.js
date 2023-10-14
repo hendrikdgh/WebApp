@@ -1,73 +1,79 @@
-import React, { useState } from 'react'; // Make sure to import useEffect
+import React, { useState } from 'react';
 import './App.css';
 
 function App() {
     const [contacts, setContacts] = useState([]);
     const [name, setName] = useState("");
     const [phone, setPhone] = useState("");
+    const [phoneType, setPhoneType] = useState("mobile");
     const [selectedContact, setSelectedContact] = useState(null);
 
-    const handleAddContact = () => {
-        setContacts([...contacts, { name, phones: [] }]);
-        setName("");
+    const addContact = () => {
+        if (name) {
+            setContacts([...contacts, { name, phones: [] }]);
+            setName("");
+        }
     };
 
-    const handleAddPhone = () => {
-        const updatedContacts = [...contacts];
-        const contact = updatedContacts.find(c => c.name === selectedContact);
-        contact.phones.push(phone);
-        setContacts(updatedContacts);
-        setPhone("");
+    const addPhone = () => {
+        if (selectedContact && phone) {
+            let updatedContacts = [...contacts];
+            const index = updatedContacts.findIndex(c => c.name === selectedContact.name);
+            updatedContacts[index].phones.push({ type: phoneType, number: phone });
+            setContacts(updatedContacts);
+            setPhone("");
+        }
     };
 
-    const handleDeleteContact = (name) => {
-        setContacts(contacts.filter(c => c.name !== name));
-        setSelectedContact(null);
+    const selectContact = (contact) => {
+        setSelectedContact(contact);
     };
 
     return (
-        <div>
-            <h1>Contactor</h1>
-            <div>
-                <input
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    placeholder="Enter Name"
+        <div className="App">
+            <div className="contact-section">
+                <input 
+                    type="text" 
+                    placeholder="Name" 
+                    value={name} 
+                    onChange={(e) => setName(e.target.value)}
                 />
-                <button onClick={handleAddContact}>Add Contact</button>
+                <button onClick={addContact}>Create Contact</button>
+                
+                <ul>
+                    {contacts.map(contact => (
+                        <li key={contact.name} onClick={() => selectContact(contact)}>
+                            {contact.name}
+                        </li>
+                    ))}
+                </ul>
             </div>
-            <div>
-                {contacts.map(contact => (
-                    <div key={contact.name}>
-                        <span>{contact.name}</span>
-                        <button onClick={() => handleDeleteContact(contact.name)}>Delete</button>
-                        {selectedContact === contact.name && (
-                            <div>
-                                <input
-                                    value={phone}
-                                    onChange={e => setPhone(e.target.value)}
-                                    placeholder="Enter Phone Number"
-                                />
-                                <button onClick={handleAddPhone}>Add Phone</button>
-                            </div>
-                        )}
-                        <button onClick={() => setSelectedContact(contact.name)}>View Phones</button>
-                    </div>
-                ))}
-            </div>
-            <div>
-                <button>Show Stats</button>
-                {selectedContact && (
-                    <div>
-                        <h2>{selectedContact}</h2>
-                        <ul>
-                            {contacts.find(c => c.name === selectedContact).phones.map(phone => (
-                                <li key={phone}>{phone}</li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
-            </div>
+
+            {selectedContact && (
+                <div className="phone-section">
+                    <h3>{selectedContact.name}</h3>
+                    <input 
+                        type="text" 
+                        placeholder="Phone Number" 
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                    />
+                    <select onChange={(e) => setPhoneType(e.target.value)}>
+                        <option value="mobile">Mobile</option>
+                        <option value="office">Office</option>
+                        {/* You can add more phone types here */}
+                    </select>
+                    <button onClick={addPhone}>Add</button>
+
+                    <ul>
+                        {selectedContact.phones.map((p, index) => (
+                            <li key={index}>
+                                {p.type}: {p.number}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 }
