@@ -1,71 +1,45 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 function App() {
-  const [contacts, setContacts] = useState([]);
-  const [phones, setPhones] = useState([]);
-  const [stats, setStats] = useState({});
+    const [contacts, setContacts] = useState([]); // Array of contact objects
 
-  // Load Contacts
-  const loadContacts = () => {
-    fetch('/api/contacts')
-      .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => setContacts(data))
-      .catch(error => console.error('Error fetching contacts:', error.message));
-  };
+    const handleCreateContact = (name) => {
+        // Logic to create a new contact
+    };
 
-  // Load Phones
-  const loadPhones = () => {
-    fetch('/api/phones')
-      .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => setPhones(data))
-      .catch(error => console.error('Error fetching phones:', error.message));
-  };
+    const handleAddPhoneNumber = (contactId, type, number) => {
+        // Logic to add a phone number to a contact
+    };
 
-  // Load Stats
-  const loadStats = () => {
-    fetch('/api/stats')
-      .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => setStats(data))
-      .catch(error => console.error('Error fetching stats:', error.message));
-  };
+    const handleDeletePhoneNumber = (contactId, phoneNumberId) => {
+        // Logic to delete a phone number from a contact
+    };
 
-  return (
-    <div className="App">
-      <button onClick={loadContacts}>Load Contacts</button>
-      <button onClick={loadPhones}>Load Phones</button>
-      <button onClick={loadStats}>Load Stats</button>
+    const handleDeleteContact = (contactId) => {
+        // Logic to delete a contact
+    };
 
-      <div className="data-display">
+    return (
         <div>
-          <h3>Contacts:</h3>
-          {/* Render your contacts data here */}
+            <input type="text" placeholder="Name" />
+            <button onClick={() => handleCreateContact()}>Create Contact</button>
+
+            <div>
+                {contacts.map(contact => (
+                    <div key={contact.id}>
+                        <span>{contact.name}</span>
+                        <button onClick={() => handleDeleteContact(contact.id)}>Delete</button>
+                    </div>
+                ))}
+            </div>
+
+            {/* Show phone numbers and input fields when a contact is clicked */}
+
+            <button>Show Stats</button>
+
+            {/* Display stats when the Show Stats button is clicked */}
         </div>
-        <div>
-          <h3>Phones:</h3>
-          {/* Render your phones data here */}
-        </div>
-        <div>
-          <h3>Stats:</h3>
-          {/* Render your stats data here */}
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 export default App;
