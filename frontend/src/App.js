@@ -1,68 +1,71 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from "react";
 
 function App() {
-    const [contacts, setContacts] = useState([]);
-    const [selectedContact, setSelectedContact] = useState(null);
-    const [stats, setStats] = useState(null);
+  const [contacts, setContacts] = useState([]);
+  const [phones, setPhones] = useState([]);
+  const [stats, setStats] = useState({});
 
-    const API_BASE_URL = '/api';  // Assuming the API is under the /api path
+  // Load Contacts
+  const loadContacts = () => {
+    fetch('/api/contacts')
+      .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => setContacts(data))
+      .catch(error => console.error('Error fetching contacts:', error.message));
+  };
 
-    // Fetch all contacts on component mount
-    useEffect(() => {
-        axios.get(`${API_BASE_URL}/contacts`).then(response => {
-            setContacts(response.data);
-        });
-    }, []);
+  // Load Phones
+  const loadPhones = () => {
+    fetch('/api/phones')
+      .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => setPhones(data))
+      .catch(error => console.error('Error fetching phones:', error.message));
+  };
 
-    // Function to create a new contact
-    const createContact = (name) => {
-        axios.post(`${API_BASE_URL}/contacts`, { name }).then(response => {
-            setContacts([...contacts, response.data]);
-        });
-    };
+  // Load Stats
+  const loadStats = () => {
+    fetch('/api/stats')
+      .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => setStats(data))
+      .catch(error => console.error('Error fetching stats:', error.message));
+  };
 
-    // Function to select a contact and fetch its phone numbers
-    const selectContact = (contactId) => {
-        axios.get(`${API_BASE_URL}/phones?contactId=${contactId}`).then(response => {
-            setSelectedContact({
-                ...contacts.find(c => c.id === contactId),
-                phones: response.data
-            });
-        });
-    };
+  return (
+    <div className="App">
+      <button onClick={loadContacts}>Load Contacts</button>
+      <button onClick={loadPhones}>Load Phones</button>
+      <button onClick={loadStats}>Load Stats</button>
 
-    // Fetch stats
-    const fetchStats = () => {
-        axios.get(`${API_BASE_URL}/stats`).then(response => {
-            setStats(response.data);
-        });
-    };
-
-    return (
-        <div className="app">
-            {/* Contact creation */}
-            <div className="contact-creation">
-                {/* Add input and button elements here to create a new contact */}
-            </div>
-
-            {/* Contact list */}
-            <div className="contact-list">
-                {/* Map through contacts and display them, adding onClick handlers to select a contact */}
-            </div>
-
-            {/* Selected contact's phone numbers */}
-            <div className="selected-contact-phones">
-                {/* Display phone numbers of the selected contact here */}
-            </div>
-
-            {/* Stats */}
-            <div className="stats">
-                <button onClick={fetchStats}>Show Stats</button>
-                {/* Display stats when fetched */}
-            </div>
+      <div className="data-display">
+        <div>
+          <h3>Contacts:</h3>
+          {/* Render your contacts data here */}
         </div>
-    );
+        <div>
+          <h3>Phones:</h3>
+          {/* Render your phones data here */}
+        </div>
+        <div>
+          <h3>Stats:</h3>
+          {/* Render your stats data here */}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default App;
