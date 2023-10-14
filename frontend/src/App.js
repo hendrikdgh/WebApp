@@ -1,79 +1,66 @@
-import React, { useState } from 'react';
-import './App.css';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 function App() {
     const [contacts, setContacts] = useState([]);
-    const [name, setName] = useState("");
-    const [phone, setPhone] = useState("");
-    const [phoneType, setPhoneType] = useState("mobile");
     const [selectedContact, setSelectedContact] = useState(null);
+    const [stats, setStats] = useState(null);
 
-    const addContact = () => {
-        if (name) {
-            setContacts([...contacts, { name, phones: [] }]);
-            setName("");
-        }
+    const API_BASE_URL = '/api';  // Assuming the API is under the /api path
+
+    // Fetch all contacts on component mount
+    useEffect(() => {
+        axios.get(`${API_BASE_URL}/contacts`).then(response => {
+            setContacts(response.data);
+        });
+    }, []);
+
+    // Function to create a new contact
+    const createContact = (name) => {
+        axios.post(`${API_BASE_URL}/contacts`, { name }).then(response => {
+            setContacts([...contacts, response.data]);
+        });
     };
 
-    const addPhone = () => {
-        if (selectedContact && phone) {
-            let updatedContacts = [...contacts];
-            const index = updatedContacts.findIndex(c => c.name === selectedContact.name);
-            updatedContacts[index].phones.push({ type: phoneType, number: phone });
-            setContacts(updatedContacts);
-            setPhone("");
-        }
+    // Function to select a contact and fetch its phone numbers
+    const selectContact = (contactId) => {
+        axios.get(`${API_BASE_URL}/phones?contactId=${contactId}`).then(response => {
+            setSelectedContact({
+                ...contacts.find(c => c.id === contactId),
+                phones: response.data
+            });
+        });
     };
 
-    const selectContact = (contact) => {
-        setSelectedContact(contact);
+    // Fetch stats
+    const fetchStats = () => {
+        axios.get(`${API_BASE_URL}/stats`).then(response => {
+            setStats(response.data);
+        });
     };
 
     return (
-        <div className="App">
-            <div className="contact-section">
-                <input 
-                    type="text" 
-                    placeholder="Name" 
-                    value={name} 
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <button onClick={addContact}>Create Contact</button>
-                
-                <ul>
-                    {contacts.map(contact => (
-                        <li key={contact.name} onClick={() => selectContact(contact)}>
-                            {contact.name}
-                        </li>
-                    ))}
-                </ul>
+        <div className="app">
+            {/* Contact creation */}
+            <div className="contact-creation">
+                {/* Add input and button elements here to create a new contact */}
             </div>
 
-            {selectedContact && (
-                <div className="phone-section">
-                    <h3>{selectedContact.name}</h3>
-                    <input 
-                        type="text" 
-                        placeholder="Phone Number" 
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                    />
-                    <select onChange={(e) => setPhoneType(e.target.value)}>
-                        <option value="mobile">Mobile</option>
-                        <option value="office">Office</option>
-                        {/* You can add more phone types here */}
-                    </select>
-                    <button onClick={addPhone}>Add</button>
+            {/* Contact list */}
+            <div className="contact-list">
+                {/* Map through contacts and display them, adding onClick handlers to select a contact */}
+            </div>
 
-                    <ul>
-                        {selectedContact.phones.map((p, index) => (
-                            <li key={index}>
-                                {p.type}: {p.number}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+            {/* Selected contact's phone numbers */}
+            <div className="selected-contact-phones">
+                {/* Display phone numbers of the selected contact here */}
+            </div>
+
+            {/* Stats */}
+            <div className="stats">
+                <button onClick={fetchStats}>Show Stats</button>
+                {/* Display stats when fetched */}
+            </div>
         </div>
     );
 }

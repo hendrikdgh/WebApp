@@ -9,7 +9,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: false
       },
-      // ... other attributes as they are
+      phone_number: { 
+        type: Sequelize.STRING,
+        allowNull: false
+      },
     });
   
     return Contact;
