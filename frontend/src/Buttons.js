@@ -1,13 +1,14 @@
 import React from 'react';
 
-function Buttons() {
+function Buttons({ onCreate, onDelete, onShowStats }) {
   return (
     <div>
-      <button>Create Contact</button>
-      <button>Delete</button>
-      <button>Show Stats</button>
+      <button onClick={onCreate}>Create Contact</button>
+      <button onClick={onDelete}>Delete</button>
+      <button onClick={onShowStats}>Show Stats</button>
     </div>
   );
 }
+
 
 export default Buttons;

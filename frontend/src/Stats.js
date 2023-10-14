@@ -1,13 +1,9 @@
 import React from 'react';
 
-function Stats() {
-  // Dummy data for now
-  const stats = {
-    totalContacts: 1,
-    totalPhones: 1,
-    newestContact: "Kiki",
-    oldestContact: "John"
-  };
+function Stats({ contacts }) {
+  const totalContacts = contacts.length;
+  const totalPhones = contacts.reduce((acc, contact) => acc + contact.phones.length, 0);
+  
 
   return (
     <div>
@@ -17,6 +13,6 @@ function Stats() {
       <p>Oldest Contact: {stats.oldestContact}</p>
     </div>
   );
-}
+  }
 
 export default Stats;

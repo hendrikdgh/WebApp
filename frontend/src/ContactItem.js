@@ -8,7 +8,9 @@ function ContactItem({ contact }) {
             <p>{contact.name}</p>
             {showDetails && (
                 <div>
-                    {/* Display phone details, perhaps in another component */}
+                    {contact.phones.map((phone, idx) => (
+                        <p key={idx}>{phone}</p>
+                    ))}
                 </div>
             )}
         </div>
