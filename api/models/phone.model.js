@@ -21,14 +21,6 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATE,
       allowNull: false
     }
-    contactId: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'contacts',
-        key: 'contactId'
-      }
-    }
   });
   
     return Phone;
