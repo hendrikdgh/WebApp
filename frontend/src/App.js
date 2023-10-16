@@ -113,7 +113,9 @@ function App() {
                 <h2>Contactor</h2>
                 <div className="input-section">
                     <input type="text" id="contact-name-input" placeholder="Name" value={contactName} onChange={e => setContactName(e.target.value)} />
-                    <p><button onClick={() => addContact(document.getElementById("contact-name-input").value)}>Create Contact</button></p>
+                </div>
+                <div>
+                    <button onClick={() => addContact(document.getElementById("contact-name-input").value)}>Create Contact</button>
                 </div>
                 <div className="contacts-section">
                     {contacts.map((contact, index) => (
