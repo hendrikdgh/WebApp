@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
     updatedAt: {
       type: Sequelize.DATE,
       allowNull: false
-    }
+    },
   });
   
     return Contact;

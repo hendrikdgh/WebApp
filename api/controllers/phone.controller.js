@@ -32,12 +32,57 @@ exports.findAll = (req, res) => {
         });
 };
 
+// Get one phone by id
+exports.findOne = (req, res) => {
+    const phoneId = req.params.phoneId;
+
+    Phones.findByPk(phoneId)
+        .then(data => {
+            if (!data) {
+                res.status(404).send({ message: "Phone not found with id " + id });
+            } else {
+                res.send(data);
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving the phone."
+            });
+        });
+};
+
+// Update one phone by id
+exports.update = (req, res) => {
+    const phoneId = req.params.phoneId;
+
+    Phones.update(req.body, {
+        where: { phoneId: phoneId }
+    })
+    .then(num => {
+        if (num == 1) {
+            res.send({
+                message: "Phone updated successfully."
+            });
+        } else {
+            res.send({
+                message: `Cannot update phone with id=${id}. Maybe phone was not found or req.body is empty!`
+            });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while updating the phone."
+        });
+    });
+};
+
+
 // Delete one phone by id
 exports.delete = (req, res) => {
-    const id = req.params.id;
+    const phoneId = req.params.phoneId;
 
     Phones.destroy({
-        where: { id: id }
+        where: { phoneId: phoneId }
     })
     .then(num => {
         if (num === 1) {

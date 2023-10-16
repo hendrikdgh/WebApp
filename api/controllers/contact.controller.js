@@ -29,14 +29,14 @@ exports.findAll = (req, res) => {
         });
 };
 
-// Get one contact by id
+// Get one contact by contactId
 exports.findOne = (req, res) => {
-    const id = req.params.id;
+    const contactId = req.params.contactId;
     
-    Contacts.findByPk(id)
+    Contacts.findByPk(contactId)
         .then(data => {
             if (!data) {
-                res.status(404).send({ message: "Some error occurred" });
+                res.status(404).send({ message: "Contact not found" });
             } else {
                 res.send(data);
             }
@@ -48,12 +48,12 @@ exports.findOne = (req, res) => {
         });
 };
 
-// Delete one contact by id
+// Delete one contact by contactId
 exports.delete = (req, res) => {
-    const id = req.params.id;
+    const contactId = req.params.contactId;
 
     Contacts.destroy({
-        where: { id: id }
+        where: { contactId: contactId }
     })
     .then(num => {
         if (num === 1) {
@@ -69,12 +69,12 @@ exports.delete = (req, res) => {
     });
 };
 
-// Update a contact by id
+// Update a contact by contactId
 exports.update = (req, res) => {
-    const id = req.params.id;
+    const contactId = req.params.contactId;
 
     Contacts.update(req.body, {
-        where: { id: id }
+        where: { contactId: contactId }
     })
     .then(num => {
         if (num == 1) {
@@ -83,7 +83,7 @@ exports.update = (req, res) => {
             });
         } else {
             res.send({
-                message: `Cannot update contact with id=${id}. Maybe contact was not found or req.body is empty!`
+                message: `Cannot update contact with contactId=${contactId}. Maybe contact was not found or req.body is empty!`
             });
         }
     })
