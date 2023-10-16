@@ -109,47 +109,52 @@ function App() {
     return (
         <div>
             <Header />
-            <div className="input-section">
-                <input type="text" id="contact-name-input" placeholder="Name" value={contactName} onChange={e => setContactName(e.target.value)} />
-                <button onClick={() => addContact(document.getElementById("contact-name-input").value)}>Create Contact</button>
-            </div>
-            <div>
-                {contacts.map((contact, index) => (
-                    <div key={index}>
-                        <span className="contact-name" onClick={() => setSelectedContact(index === selectedContact ? null : index)}>{contact.name}</span>
-                        <button onClick={() => deleteContact(index)}>Delete</button>
-                        {index === selectedContact && (
-                            <div className="phone-input-section">
-                                <input type="text" placeholder="Name" id={`type-input-${index}`} />
-                                <input type="text" placeholder="Phone Number" id={`phone-input-${index}`} />
-                                <button onClick={() => addPhoneNumber(index, document.getElementById(`type-input-${index}`).value, document.getElementById(`phone-input-${index}`).value)}>Add</button>
-                            </div>
-                        )}
-                        {contact.phones.map((phone, phoneIndex) => (
-                            <div key={phoneIndex}>
-                                <span>{phone.type}: {phone.number}</span>
-                                <button onClick={() => deletePhoneNumber(index, phoneIndex)}>Delete</button>
-                            </div>
-                        ))}
-                    </div>
-                ))}
-            </div>
-
-            <button onClick={toggleStats}>
-                {showStats ? "Hide Stats" : "Show Stats"}
-            </button>
-
-            {showStats && (
-                <div className="stats-section">
-                    <h2>Statistics</h2>
-                    <p>Number of Contacts: {stats.numberOfContacts}</p>
-                    <p>Number of Phones: {stats.numberOfPhones}</p>
-                    <p>Newest Contact Timestamp: {stats.newestContactTimestamp}</p>
-                    <p>Oldest Contact Timestamp: {stats.oldestContactTimestamp}</p>
+            <div className="container">
+                <h2>Contactor</h2>
+                <div className="input-section">
+                    <input type="text" id="contact-name-input" placeholder="Name" value={contactName} onChange={e => setContactName(e.target.value)} />
+                    <button onClick={() => addContact(document.getElementById("contact-name-input").value)}>Create Contact</button>
                 </div>
-            )}
+                <div className="contacts-section">
+                    <h3>Contacts</h3>
+                    {contacts.map((contact, index) => (
+                        <div className="contact-item" key={index}>
+                            <span className="contact-name" onClick={() => setSelectedContact(index === selectedContact ? null : index)}>{contact.name}</span>
+                            <button onClick={() => deleteContact(index)}>Delete</button>
+                            {index === selectedContact && (
+                                <div className="phone-section">
+                                    <div className="phone-input-section">
+                                        <input type="text" placeholder="Name" id={`type-input-${index}`} />
+                                        <input type="text" placeholder="Phone Number" id={`phone-input-${index}`} />
+                                        <button onClick={() => addPhoneNumber(index, document.getElementById(`type-input-${index}`).value, document.getElementById(`phone-input-${index}`).value)}>Add</button>
+                                    </div>
+                                    {contact.phones.map((phone, phoneIndex) => (
+                                        <div className="phone-item" key={phoneIndex}>
+                                            <span>{phone.type}: {phone.number}</span>
+                                            <button onClick={() => deletePhoneNumber(index, phoneIndex)}>Delete</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+                <button onClick={toggleStats} className="stats-toggle-btn">
+                    {showStats ? "Hide Stats" : "Show Stats"}
+                </button>
+                {showStats && (
+                    <div className="stats-section">
+                        <h2>Statistics</h2>
+                        <p>Number of Contacts: {stats.numberOfContacts}</p>
+                        <p>Number of Phones: {stats.numberOfPhones}</p>
+                        <p>Newest Contact Timestamp: {stats.newestContactTimestamp}</p>
+                        <p>Oldest Contact Timestamp: {stats.oldestContactTimestamp}</p>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
+
 
 export default App;
