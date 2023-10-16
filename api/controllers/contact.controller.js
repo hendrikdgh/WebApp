@@ -68,3 +68,28 @@ exports.delete = (req, res) => {
         });
     });
 };
+
+// Update a contact by id
+exports.update = (req, res) => {
+    const id = req.params.id;
+
+    Contacts.update(req.body, {
+        where: { id: id }
+    })
+    .then(num => {
+        if (num == 1) {
+            res.send({
+                message: "Contact updated successfully."
+            });
+        } else {
+            res.send({
+                message: `Cannot update contact with id=${id}. Maybe contact was not found or req.body is empty!`
+            });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while updating the contact."
+        });
+    });
+};
