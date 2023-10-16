@@ -14,7 +14,7 @@ exports.create = (req, res) => {
         .then(data => res.send(data))
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Error creating phone number."
+                message: err.message || "Some error occurred"
             });
         });
 };
@@ -27,7 +27,7 @@ exports.findAll = (req, res) => {
         .then(data => res.send(data))
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Error fetching phone numbers."
+                message: err.message || "Some error occurred"
             });
         });
 };
@@ -48,7 +48,7 @@ exports.delete = (req, res) => {
     })
     .catch(err => {
         res.status(500).send({
-            message: err.message || "Error deleting phone number."
+            message: err.message || "Some error occurred"
         });
     });
 };

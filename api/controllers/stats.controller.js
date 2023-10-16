@@ -21,7 +21,7 @@ exports.calculate = (req, res) => {
     })
     .catch(err => {
         res.status(500).send({
-            message: err.message || "Error calculating stats."
+            message: err.message || "Some error occurred"
         });
     });
 };

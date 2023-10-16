@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Header from './Header';
 
 function App() {
     const [contacts, setContacts] = useState([]);
-    const [selectedContact, setSelectedContact] = useState(null);  // Store the clicked contact
+    const [selectedContact, setSelectedContact] = useState(null);
     const [showStats, setShowStats] = useState(false);
+
+    useEffect(() => {
+        // Fetch contacts from the backend when the component loads
+        fetch('/api/contacts')
+            .then(response => response.json())
+            .then(data => setContacts(data));
+    }, []);
 
     const toggleStats = () => {
         setShowStats(!showStats);
@@ -13,26 +20,60 @@ function App() {
 
     const addContact = (name) => {
         if (name.trim() !== '') {
-            setContacts([...contacts, { name, phones: [] }]);
+            fetch('/api/contacts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name })
+            })
+            .then(response => response.json())
+            .then(contact => {
+                setContacts([...contacts, contact]);
+            });
         }
     };
 
     const deleteContact = (index) => {
-        const newContacts = [...contacts];
-        newContacts.splice(index, 1);
-        setContacts(newContacts);
+        const contactId = contacts[index].id;
+        fetch(`/api/contacts/${contactId}`, {
+            method: 'DELETE'
+        })
+        .then(() => {
+            const newContacts = [...contacts];
+            newContacts.splice(index, 1);
+            setContacts(newContacts);
+        });
     };
 
     const addPhoneNumber = (index, type, number) => {
-        const newContacts = [...contacts];
-        newContacts[index].phones.push({ type, number });
-        setContacts(newContacts);
+        const contactId = contacts[index].id;
+        fetch(`/api/contacts/${contactId}/phones`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ type, number })
+        })
+        .then(response => response.json())
+        .then(phone => {
+            const newContacts = [...contacts];
+            newContacts[index].phones.push(phone);
+            setContacts(newContacts);
+        });
     };
 
     const deletePhoneNumber = (contactIndex, phoneIndex) => {
-        const newContacts = [...contacts];
-        newContacts[contactIndex].phones.splice(phoneIndex, 1);
-        setContacts(newContacts);
+        const contactId = contacts[contactIndex].id;
+        const phoneId = contacts[contactIndex].phones[phoneIndex].id;
+        fetch(`/api/contacts/${contactId}/phones/${phoneId}`, {
+            method: 'DELETE'
+        })
+        .then(() => {
+            const newContacts = [...contacts];
+            newContacts[contactIndex].phones.splice(phoneIndex, 1);
+            setContacts(newContacts);
+        });
     };
 
     const stats = {
@@ -41,6 +82,7 @@ function App() {
         newestContactTimestamp: contacts.length ? contacts[contacts.length - 1].timestamp : '',
         oldestContactTimestamp: contacts.length ? contacts[0].timestamp : ''
     };
+
 
     return (
         <div>

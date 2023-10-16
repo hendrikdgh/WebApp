@@ -13,7 +13,7 @@ exports.create = (req, res) => {
         .then(data => res.send(data))
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Error creating contact."
+                message: err.message || "Some error occurred"
             });
         });
 };
@@ -24,7 +24,7 @@ exports.findAll = (req, res) => {
         .then(data => res.send(data))
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Error fetching contacts."
+                message: err.message || "Some error occurred"
             });
         });
 };
@@ -36,14 +36,14 @@ exports.findOne = (req, res) => {
     Contacts.findByPk(id)
         .then(data => {
             if (!data) {
-                res.status(404).send({ message: "Not found" });
+                res.status(404).send({ message: "Some error occurred" });
             } else {
                 res.send(data);
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Error fetching contact."
+                message: err.message || "Some error occurred"
             });
         });
 };
@@ -64,7 +64,7 @@ exports.delete = (req, res) => {
     })
     .catch(err => {
         res.status(500).send({
-            message: err.message || "Error deleting contact."
+            message: err.message || "Some error occurred"
         });
     });
 };
