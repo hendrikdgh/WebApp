@@ -10,10 +10,15 @@ function App() {
 
     useEffect(() => {
         fetch('http://localhost/api/contacts')
-            .then(response => response.json())
-            .then(data => setTasks(data))
-            .catch((error) => {
-                console.error('Error:', error);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => setContacts(data))
+            .catch(error => {
+                console.error('There was a problem fetching the contacts:', error);
             });
     }, []);
 
@@ -24,7 +29,7 @@ function App() {
     const addContact = (name) => {
         const inputElement = document.getElementById("contact-name-input");
         if (contactName.trim() !== '') {
-            fetch('http://localhost/api/contacts', {
+            fetch('http://localhost/api/contacts/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
