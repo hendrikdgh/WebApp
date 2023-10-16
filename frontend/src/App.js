@@ -116,7 +116,6 @@ function App() {
                     <button onClick={() => addContact(document.getElementById("contact-name-input").value)}>Create Contact</button>
                 </div>
                 <div className="contacts-section">
-                    <h3>Contacts</h3>
                     {contacts.map((contact, index) => (
                         <div className="contact-item" key={index}>
                             <span className="contact-name" onClick={() => setSelectedContact(index === selectedContact ? null : index)}>{contact.name}</span>
