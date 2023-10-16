@@ -6,6 +6,7 @@ function App() {
     const [contacts, setContacts] = useState([]);
     const [selectedContact, setSelectedContact] = useState(null);
     const [showStats, setShowStats] = useState(false);
+    const [contactName, setContactName] = useState('');
 
     useEffect(() => {
         fetch('http://localhost:5000/api/contacts')
@@ -27,8 +28,8 @@ function App() {
 
     const addContact = (name) => {
         const inputElement = document.getElementById("contact-name-input");
-        if (inputElement.value.trim() !== '') {
-            fetch('/api/contacts', {
+        if (contactName.trim() !== '') {
+            fetch('http://localhost:5000/api/contacts', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -54,7 +55,7 @@ function App() {
 
     const deleteContact = (index) => {
         const contactId = contacts[index].id;
-        fetch(`/api/contacts/${contactId}`, {
+        fetch(`http://localhost:5000/api/contacts/${contactId}`, {
             method: 'DELETE'
         })
         .then(() => {
@@ -69,7 +70,7 @@ function App() {
 
     const addPhoneNumber = (index, type, number) => {
         const contactId = contacts[index].id;
-        fetch(`/api/contacts/${contactId}/phones`, {
+        fetch(`http://localhost:5000/api/contacts/${contactId}/phones`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -87,7 +88,7 @@ function App() {
     const deletePhoneNumber = (contactIndex, phoneIndex) => {
         const contactId = contacts[contactIndex].id;
         const phoneId = contacts[contactIndex].phones[phoneIndex].id;
-        fetch(`/api/contacts/${contactId}/phones/${phoneId}`, {
+        fetch(`http://localhost:5000/api/contacts/${contactId}/phones/${phoneId}`, {
             method: 'DELETE'
         })
         .then(() => {
@@ -109,7 +110,7 @@ function App() {
         <div>
             <Header />
             <div className="input-section">
-                <input type="text" placeholder="Name" id="contact-name-input" />
+            <input type="text" placeholder="Name" value={contactName} onChange={e => setContactName(e.target.value)} />
                 <button onClick={() => addContact(document.getElementById("contact-name-input").value)}>Create Contact</button>
             </div>
             <div>
