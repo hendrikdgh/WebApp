@@ -8,7 +8,7 @@ function App() {
     const [showStats, setShowStats] = useState(false);
 
     useEffect(() => {
-        fetch('/contacts')
+        fetch('http://localhost:5000/api/contacts')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -26,13 +26,14 @@ function App() {
     };
 
     const addContact = (name) => {
-        if (name.trim() !== '') {
-            fetch('/contacts/', {
+        const inputElement = document.getElementById("contact-name-input");
+        if (inputElement.value.trim() !== '') {
+            fetch('/api/contacts', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ name })
+                body: JSON.stringify({ name: inputElement.value })
             })
             .then(response => {
                 if (!response.ok) {
@@ -42,24 +43,29 @@ function App() {
             })
             .then(contact => {
                 setContacts([...contacts, contact]);
+                inputElement.value = '';  // Clear the input after adding
             })
             .catch(error => {
                 console.error('There was a problem adding the contact:', error);
             });
         }
     };
+    
 
     const deleteContact = (index) => {
         const contactId = contacts[index].id;
-        fetch(`/contacts/${contactId}`, {
+        fetch(`/api/contacts/${contactId}`, {
             method: 'DELETE'
         })
         .then(() => {
-            const newContacts = [...contacts];
-            newContacts.splice(index, 1);
-            setContacts(newContacts);
+            setContacts(prevContacts => {
+                const newContacts = [...prevContacts];
+                newContacts.splice(index, 1);
+                return newContacts;
+            });
         });
     };
+    
 
     const addPhoneNumber = (index, type, number) => {
         const contactId = contacts[index].id;
