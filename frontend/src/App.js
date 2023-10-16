@@ -8,7 +8,7 @@ function App() {
     const [showStats, setShowStats] = useState(false);
 
     useEffect(() => {
-        fetch('http://localhost:5000/api/contacts/')
+        fetch('http://localhost:5000/api/contacts')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -69,7 +69,7 @@ function App() {
 
     const addPhoneNumber = (index, type, number) => {
         const contactId = contacts[index].id;
-        fetch(`/contacts/${contactId}/phones`, {
+        fetch(`/api/contacts/${contactId}/phones`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -87,7 +87,7 @@ function App() {
     const deletePhoneNumber = (contactIndex, phoneIndex) => {
         const contactId = contacts[contactIndex].id;
         const phoneId = contacts[contactIndex].phones[phoneIndex].id;
-        fetch(`/contacts/${contactId}/phones/${phoneId}`, {
+        fetch(`/api/contacts/${contactId}/phones/${phoneId}`, {
             method: 'DELETE'
         })
         .then(() => {
