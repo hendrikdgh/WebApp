@@ -8,10 +8,17 @@ function App() {
     const [showStats, setShowStats] = useState(false);
 
     useEffect(() => {
-        // Fetch contacts from the backend when the component loads
         fetch('/api/contacts')
-            .then(response => response.json())
-            .then(data => setContacts(data));
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => setContacts(data))
+            .catch(error => {
+                console.error('There was a problem fetching the contacts:', error);
+            });
     }, []);
 
     const toggleStats = () => {
@@ -27,9 +34,17 @@ function App() {
                 },
                 body: JSON.stringify({ name })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(contact => {
                 setContacts([...contacts, contact]);
+            })
+            .catch(error => {
+                console.error('There was a problem adding the contact:', error);
             });
         }
     };
