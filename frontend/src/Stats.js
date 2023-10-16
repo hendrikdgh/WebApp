@@ -1,18 +1,15 @@
 import React from 'react';
 
-function Stats({ contacts }) {
-  const totalContacts = contacts.length;
-  const totalPhones = contacts.reduce((acc, contact) => acc + contact.phones.length, 0);
-  
-
-  return (
-    <div>
-      <p>Total Contacts: {stats.totalContacts}</p>
-      <p>Total Phones: {stats.totalPhones}</p>
-      <p>Newest Contact: {stats.newestContact}</p>
-      <p>Oldest Contact: {stats.oldestContact}</p>
-    </div>
-  );
-  }
+function Stats({ stats, refreshStats }) {
+    return (
+        <div>
+            <p>Total Contacts: {stats.numberOfContacts}</p>
+            <p>Total Phones: {stats.numberOfPhones}</p>
+            <p>Newest Contact: {new Date(stats.newestContactTimestamp).toLocaleString()}</p>
+            <p>Oldest Contact: {new Date(stats.oldestContactTimestamp).toLocaleString()}</p>
+            <button onClick={refreshStats}>Refresh Stats</button>
+        </div>
+    );
+}
 
 export default Stats;

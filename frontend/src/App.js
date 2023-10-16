@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import Header from './Header';
+import Stats from './Stats';
 
 function App() {
     const [contacts, setContacts] = useState([]);
     const [selectedContact, setSelectedContact] = useState(null);
-    const [showStats, setShowStats] = useState(false);
+    const [stats, setStats] = useState({
+        numberOfContacts: 0,
+        numberOfPhones: 0,
+        newestContactTimestamp: '',
+        oldestContactTimestamp: ''
+    });
     const [contactName, setContactName] = useState('');
+    const [showStats, setShowStats] = useState(false);  // Added this state
 
     useEffect(() => {
+        fetchContacts();
+        fetchStats();
+    }, []);
+
+    const fetchContacts = () => {
         fetch('http://localhost/api/contacts')
             .then(response => {
                 if (!response.ok) {
@@ -20,21 +32,31 @@ function App() {
             .catch(error => {
                 console.error('There was a problem fetching the contacts:', error);
             });
-    }, []);
-
-    const toggleStats = () => {
-        setShowStats(!showStats);
     };
 
-    const addContact = (name) => {
-        const inputElement = document.getElementById("contact-name-input");
+    const fetchStats = () => {
+        fetch('http://localhost/api/stats')
+            .then(response => response.json())
+            .then(data => setStats(data))
+            .catch(error => console.error('There was a problem fetching the stats:', error));
+    };
+
+    const refreshStats = () => {
+        fetchStats();
+    };
+
+    const toggleStats = () => {
+        setShowStats(prevShowStats => !prevShowStats);
+    };    
+
+    const addContact = () => {
         if (contactName.trim() !== '') {
             fetch('http://localhost/api/contacts/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ name: inputElement.value })
+                body: JSON.stringify({ name: contactName })
             })
             .then(response => {
                 if (!response.ok) {
@@ -44,7 +66,7 @@ function App() {
             })
             .then(contact => {
                 setContacts([...contacts, contact]);
-                inputElement.value = '';  // Clear the input after adding
+                setContactName('');  // Clear the state after adding
             })
             .catch(error => {
                 console.error('There was a problem adding the contact:', error);
@@ -98,7 +120,7 @@ function App() {
         });
     };
 
-    const stats = {
+    const computedStats = {
         numberOfContacts: contacts.length,
         numberOfPhones: contacts.reduce((acc, contact) => acc + contact.phones.length, 0),
         newestContactTimestamp: contacts.length ? contacts[contacts.length - 1].timestamp : '',
@@ -115,7 +137,7 @@ function App() {
                     <input type="text" id="contact-name-input" placeholder="Name" value={contactName} onChange={e => setContactName(e.target.value)} />
                 </div>
                 <div>
-                    <button onClick={() => addContact(document.getElementById("contact-name-input").value)}>Create Contact</button>
+                    <button onClick={addContact}>Create Contact</button> 
                 </div>
                 <div className="contacts-section">
                     {contacts.map((contact, index) => (
@@ -143,19 +165,10 @@ function App() {
                 <button onClick={toggleStats} className="stats-toggle-btn">
                     {showStats ? "Hide Stats" : "Show Stats"}
                 </button>
-                {showStats && (
-                    <div className="stats-section">
-                        <h2>Statistics</h2>
-                        <p>Number of Contacts: {stats.numberOfContacts}</p>
-                        <p>Number of Phones: {stats.numberOfPhones}</p>
-                        <p>Newest Contact Timestamp: {stats.newestContactTimestamp}</p>
-                        <p>Oldest Contact Timestamp: {stats.oldestContactTimestamp}</p>
-                    </div>
-                )}
+                {showStats && <Stats stats={stats} refreshStats={refreshStats} />}
             </div>
         </div>
-    );
+    );    
 }
-
 
 export default App;

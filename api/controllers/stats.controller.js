@@ -8,20 +8,20 @@ exports.calculate = (req, res) => {
     Promise.all([
         Contacts.count(),
         Phones.count(),
-        Phones.min('createdAt'),
-        Phones.max('createdAt')
+        Contacts.min('createdAt'),
+        Contacts.max('createdAt')
     ])
-    .then(([numContacts, numPhones, earliestPhone, latestPhone]) => {
+    .then(([numContacts, numPhones, oldestContact, newestContact]) => {
         res.send({
             numContacts,
             numPhones,
-            earliestPhone,
-            latestPhone
+            oldestContact,
+            newestContact
         });
     })
     .catch(err => {
         res.status(500).send({
-            message: err.message || "Some error occurred"
+            message: err.message || "Some error occurred while calculating stats."
         });
     });
 };
