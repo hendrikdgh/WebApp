@@ -7,7 +7,7 @@ function Stats({ stats, refreshStats }) {
             <p>Total Phones: {stats.numPhones}</p>
             <p>Oldest Contact Timestamp: {new Date(stats.oldestContact).toLocaleString()}</p>
             <p>Newest Contact Timestamp: {new Date(stats.newestContact).toLocaleString()}</p>
-            <button onClick={refreshStats}>Refresh Stats</button>
+            <button onClick={refreshStats}>Refresh</button>
         </div>
     );
 }

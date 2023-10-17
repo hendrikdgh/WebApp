@@ -5,6 +5,10 @@ module.exports = (sequelize, Sequelize) => {
       autoIncrement: true,
       primaryKey: true
     },
+    contactId: {
+      type: Sequelize.INTEGER,
+      allowNull: false
+    },
     type: { 
       type: Sequelize.STRING,
       allowNull: false
@@ -15,14 +19,15 @@ module.exports = (sequelize, Sequelize) => {
     },
     createdAt: {
       type: Sequelize.DATE,
-      allowNull: false
+      allowNull: false,
+      defaultValue: Sequelize.NOW
     },
     updatedAt: {
       type: Sequelize.DATE,
-      allowNull: false
+      allowNull: false,
+      defaultValue: Sequelize.NOW
     },
   });
-  
-    return Phone;
-  };
-  
+
+  return Phone;
+};

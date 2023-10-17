@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { renderContacts } from './Components/Contactor';
-import Header from './Components/Header';
+import { renderContacts } from './Contactor';
+import Header from './Header';
 import Stats from './Stats';
 
 function App() {
@@ -65,7 +65,6 @@ function App() {
                 const contact = await response.json();
                 setContacts(prevContacts => [...prevContacts, contact]);
                 setContactName('');
-                fetchStats();
             } catch (error) {
                 console.error('There was a problem adding the contact:', error);
             }
@@ -94,6 +93,9 @@ function App() {
         .then(phone => {
             const newContacts = [...contacts];
             const contactIndex = newContacts.findIndex(contact => contact.contactId === contactId);
+            if(!newContacts[contactIndex].phones) {
+                newContacts[contactIndex].phones = []; // Ensure phones is an array
+            }
             newContacts[contactIndex].phones.push(phone);
             setContacts(newContacts);
         });
@@ -106,7 +108,9 @@ function App() {
         .then(() => {
             const newContacts = [...contacts];
             const contactIndex = newContacts.findIndex(contact => contact.contactId === contactId);
-            newContacts[contactIndex].phones = newContacts[contactIndex].phones.filter(phone => phone.phoneId !== phoneId);
+            newContacts[contactIndex].phones = newContacts[contactIndex].phones ? 
+                newContacts[contactIndex].phones.filter(phone => phone.phoneId !== phoneId) :
+                [];
             setContacts(newContacts);
         });
     };
@@ -121,11 +125,11 @@ function App() {
                 </div>
                 <div>
                     <button onClick={addContact}>Create Contact</button> 
-                </div>
+                </div><hr></hr>
                 <div className="contacts-section">
                     {renderContacts(contacts, setSelectedContact, selectedContact, deleteContact, addPhoneNumber, deletePhoneNumber)}
                 </div>
-                </div>
+                </div><hr></hr>
                 <div className="information-section">
                     <p>Click a contact to view associated phone numbers</p>
                 </div>
@@ -135,7 +139,7 @@ function App() {
                 </button>
                 </div>
                 <div>
-                {showStats && <Stats stats={stats} />}
+                {showStats && <Stats stats={stats} refreshStats={fetchStats} />}
                 </div>
         </div>
     );

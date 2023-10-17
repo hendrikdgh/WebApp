@@ -6,6 +6,11 @@ body {
 
 h1 {
     color: rgb(103, 50, 36);
+    background-color: rgba(234, 104, 39, 0.152);
+}
+
+hr {
+    color: aquamarine;
 }
 
 div {
@@ -14,6 +19,12 @@ div {
 
 .container {
     border: black;
+}
+
+.contact-item {
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
 }
 
 .input-section {
@@ -38,10 +49,26 @@ div {
     font-weight: bold;
 }
 
+hr {
+    border: 0;
+    height: 3px;
+    background-color: black;
+}
+
+.phone-section {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration-color: rgb(68, 40, 7);
+}
+
 .phone-input-section {
     margin-top: 10px;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .phone-input-section input {

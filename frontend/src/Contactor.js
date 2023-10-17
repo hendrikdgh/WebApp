@@ -1,4 +1,5 @@
 import React from 'react';
+import './App.css';
 
 export function renderContacts(contacts, setSelectedContact, selectedContact, deleteContact, addPhoneNumber, deletePhoneNumber) {
     const contactElements = [];
@@ -16,34 +17,31 @@ export function renderContacts(contacts, setSelectedContact, selectedContact, de
                             <input type="text" placeholder="Phone Number" id={`phone-input-${contactId}`} />
                             <button onClick={() => addPhoneNumber(contactId, document.getElementById(`type-input-${contactId}`).value, document.getElementById(`phone-input-${contactId}`).value)}>Add</button>
                         </div>
-                        {contact.phones && contact.phones.map((phone) => (
-                            <div className="phone-item" key={phone.phoneId}>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Number</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>{phone.type}</td>
-                                            <td>{phone.phone_number}</td>
-                                            <td>
-                                                <button onClick={() => deletePhoneNumber(contactId, phone.phoneId)}>Delete</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        ))}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Number</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {contact.phones?.map(phone => (
+                                    <tr key={phone.phoneId}>
+                                        <td>{phone.type}</td>
+                                        <td>{phone.phone_number}</td>
+                                        <td>
+                                            <button onClick={() => deletePhoneNumber(contact.contactId, phone.phoneId)}>Delete</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 )}
             </div>
         );
     }
-    
 
     return contactElements;
 }
