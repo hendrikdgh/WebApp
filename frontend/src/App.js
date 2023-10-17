@@ -85,13 +85,13 @@ function App() {
         });
     };
     
-    const addPhoneNumber = (contactId, type, number) => {
-        fetch(`http://localhost:5006/api/contacts/${contactId}/phones`, {
+    const addPhoneNumber = (contactId, type, phone_number) => {
+        fetch(`http://localhost:5006/api/contacts/${contactId}/phones/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ type, number })
+            body: JSON.stringify({ type, phone_number })
         })
         .then(response => response.json())
         .then(phone => {
@@ -129,15 +129,15 @@ function App() {
                 </div>
                 <div>
                     <button onClick={addContact}>Create Contact</button> 
-                </div><hr></hr>
+                </div>
                 <div className="contacts-section">
                     {renderContacts(contacts, setSelectedContact, selectedContact, deleteContact, addPhoneNumber, deletePhoneNumber)}
                 </div>
-                </div><hr></hr>
+                </div>
                 <div className="information-section">
                     <p>Click a contact to view associated phone numbers</p>
-                </div>
-                <div className="contacts-section">
+                </div><hr></hr>
+                <div className="stats-section">
                 <button onClick={toggleStats} className="stats-toggle-btn">
                     {showStats ? "Hide Stats" : "Show Stats"}
                 </button>
