@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import Header from './Header';
+import Header from './Components/Header';
 import Stats from './Stats';
+import { renderContacts } from './Components/Contactor';
 
 function App() {
     const [contacts, setContacts] = useState([]);
@@ -13,7 +14,7 @@ function App() {
         newestContact: ''
     });
     const [name, setContactName] = useState('');
-    const [showStats, setShowStats] = useState(false); 
+    const [showStats, setShowStats] = useState(false);
 
     useEffect(() => {
         fetchContacts();
@@ -22,7 +23,9 @@ function App() {
 
     const fetchContacts = async () => {
         try {
-            const response = await fetch('http://localhost/api/contacts');
+            const response = await fetch('http://localhost:5006/api/contacts', {
+                method:"GET"
+            });
             const data = await response.json();
             setContacts(data);
         } catch (error) {
@@ -32,7 +35,9 @@ function App() {
 
     const fetchStats = async () => {
         try {
-            const response = await fetch('http://localhost/api/stats');
+            const response = await fetch('http://localhost:5006/api/stats', {
+                method:"GET"
+            });
             const data = await response.json();
             setStats(data);
         } catch (error) {
@@ -45,7 +50,7 @@ function App() {
     const addContact = async () => {
         if (name.trim() !== '') {
             try {
-                const response = await fetch('http://localhost/api/contacts/', {
+                const response = await fetch('http://localhost:5006/api/contacts/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -70,7 +75,7 @@ function App() {
 
     const deleteContact = (index) => {
         const contactId = contacts[index].id;
-        fetch(`http://localhost/api/contacts/${contactId}`, {
+        fetch(`http://localhost:5006/api/contacts/${contactId}`, {
             method: 'DELETE'
         })
         .then(() => {
@@ -85,7 +90,7 @@ function App() {
 
     const addPhoneNumber = (index, type, number) => {
         const contactId = contacts[index].id;
-        fetch(`http://localhost/api/contacts/${contactId}/phones`, {
+        fetch(`http://localhost:5006/api/contacts/${contactId}/phones`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -103,7 +108,7 @@ function App() {
     const deletePhoneNumber = (contactIndex, phoneIndex) => {
         const contactId = contacts[contactIndex].id;
         const phoneId = contacts[contactIndex].phones[phoneIndex].id;
-        fetch(`http://localhost/api/contacts/${contactId}/phones/${phoneId}`, {
+        fetch(`http://localhost:5006/api/contacts/${contactId}/phones/${phoneId}`, {
             method: 'DELETE'
         })
         .then(() => {
@@ -125,43 +130,8 @@ function App() {
                     <button onClick={addContact}>Create Contact</button> 
                 </div>
                 <div className="contacts-section">
-                    {contacts.map((contact, index) => (
-                        <div className="contact-item" key={index}>
-                            <span className="contact-name" onClick={() => setSelectedContact(index === selectedContact ? null : index)}>{contact.name}</span>
-                            <button onClick={() => deleteContact(index)}>Delete</button>
-                            {index === selectedContact && (
-                                <div className="phone-section">
-                                    <div className="phone-input-section">
-                                        <input type="text" placeholder="Name" id={`type-input-${index}`} />
-                                        <input type="text" placeholder="Phone Number" id={`phone-input-${index}`} />
-                                        <button onClick={() => addPhoneNumber(index, document.getElementById(`type-input-${index}`).value, document.getElementById(`phone-input-${index}`).value)}>Add</button>
-                                    </div>
-                                    {contact.phones.map((phone, phoneIndex) => (
-                                        <div className="phone-item" key={phoneIndex}>
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Number</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>{phone.type}</td>
-                                                    <td>{phone.number}</td>
-                                                    <td>
-                                                        <button onClick={() => deletePhoneNumber(index, phoneIndex)}>Delete</button>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                ))}
+                    {renderContacts(contacts, setSelectedContact, selectedContact, deleteContact, addPhoneNumber, deletePhoneNumber)}
+                </div>
                 </div>
                 <div className="information-section">
                     <p>Click a contact to view associated phone numbers</p>
@@ -171,8 +141,9 @@ function App() {
                     {showStats ? "Hide Stats" : "Show Stats"}
                 </button>
                 </div>
+                <div>
                 {showStats && <Stats stats={stats} />}
-            </div>
+                </div>
         </div>
     );
 }
