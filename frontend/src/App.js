@@ -7,70 +7,63 @@ function App() {
     const [contacts, setContacts] = useState([]);
     const [selectedContact, setSelectedContact] = useState(null);
     const [stats, setStats] = useState({
-        numberOfContacts: 0,
-        numberOfPhones: 0,
-        newestContactTimestamp: '',
-        oldestContactTimestamp: ''
+        numContacts: 0,
+        numPhones: 0,
+        oldestContact: '',
+        newestContact: ''
     });
-    const [contactName, setContactName] = useState('');
-    const [showStats, setShowStats] = useState(false);  // Added this state
+    const [name, setContactName] = useState('');
+    const [showStats, setShowStats] = useState(false); 
 
     useEffect(() => {
         fetchContacts();
         fetchStats();
     }, []);
 
-    const fetchContacts = () => {
-        fetch('http://localhost/api/contacts')
-            .then(response => {
+    const fetchContacts = async () => {
+        try {
+            const response = await fetch('http://localhost/api/contacts');
+            const data = await response.json();
+            setContacts(data);
+        } catch (error) {
+            console.error('There was a problem fetching the contacts:', error);
+        }
+    };
+
+    const fetchStats = async () => {
+        try {
+            const response = await fetch('http://localhost/api/stats');
+            const data = await response.json();
+            setStats(data);
+        } catch (error) {
+            console.error('There was a problem fetching the stats:', error);
+        }
+    };
+
+    const toggleStats = () => setShowStats(prevShowStats => !prevShowStats);  
+
+    const addContact = async () => {
+        if (name.trim() !== '') {
+            try {
+                const response = await fetch('http://localhost/api/contacts/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: name })
+                });
+
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                return response.json();
-            })
-            .then(data => setContacts(data))
-            .catch(error => {
-                console.error('There was a problem fetching the contacts:', error);
-            });
-    };
 
-    const fetchStats = () => {
-        fetch('http://localhost/api/stats')
-            .then(response => response.json())
-            .then(data => setStats(data))
-            .catch(error => console.error('There was a problem fetching the stats:', error));
-    };
-
-    const refreshStats = () => {
-        fetchStats();
-    };
-
-    const toggleStats = () => {
-        setShowStats(prevShowStats => !prevShowStats);
-    };    
-
-    const addContact = () => {
-        if (contactName.trim() !== '') {
-            fetch('http://localhost/api/contacts/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name: contactName })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(contact => {
-                setContacts([...contacts, contact]);
-                setContactName('');  // Clear the state after adding
-            })
-            .catch(error => {
+                const contact = await response.json();
+                setContacts(prevContacts => [...prevContacts, contact]);
+                setContactName('');
+                fetchStats();
+            } catch (error) {
                 console.error('There was a problem adding the contact:', error);
-            });
+            }
         }
     };
     
@@ -120,21 +113,13 @@ function App() {
         });
     };
 
-    const computedStats = {
-        numberOfContacts: contacts.length,
-        numberOfPhones: contacts.reduce((acc, contact) => acc + contact.phones.length, 0),
-        newestContactTimestamp: contacts.length ? contacts[contacts.length - 1].timestamp : '',
-        oldestContactTimestamp: contacts.length ? contacts[0].timestamp : ''
-    };
-
-
     return (
         <div>
             <Header />
             <div className="container">
                 <h2>Contactor</h2>
                 <div className="input-section">
-                    <input type="text" id="contact-name-input" placeholder="Name" value={contactName} onChange={e => setContactName(e.target.value)} />
+                    <input type="text" id="contact-name-input" placeholder="Name" value={name} onChange={e => setContactName(e.target.value)} />
                 </div>
                 <div>
                     <button onClick={addContact}>Create Contact</button> 
@@ -153,19 +138,40 @@ function App() {
                                     </div>
                                     {contact.phones.map((phone, phoneIndex) => (
                                         <div className="phone-item" key={phoneIndex}>
-                                            <span>{phone.type}: {phone.number}</span>
-                                            <button onClick={() => deletePhoneNumber(index, phoneIndex)}>Delete</button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Number</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{phone.type}</td>
+                                                    <td>{phone.number}</td>
+                                                    <td>
+                                                        <button onClick={() => deletePhoneNumber(index, phoneIndex)}>Delete</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                ))}
                 </div>
+                <div className="information-section">
+                    <p>Click a contact to view associated phone numbers</p>
+                </div>
+                <div className="contacts-section">
                 <button onClick={toggleStats} className="stats-toggle-btn">
                     {showStats ? "Hide Stats" : "Show Stats"}
                 </button>
-                {showStats && <Stats stats={stats} refreshStats={refreshStats} />}
+                </div>
+                {showStats && <Stats stats={stats} />}
             </div>
         </div>
     );    
