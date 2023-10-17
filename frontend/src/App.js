@@ -26,8 +26,12 @@ function App() {
             const response = await fetch('http://localhost:5006/api/contacts', {
                 method:"GET"
             });
-            const data = await response.json();
-            setContacts(data);
+            const data = await response.json();  // <-- Add this line
+            const contactsWithPhones = data.map(contact => ({
+                ...contact,
+                phones: contact.phones || []
+            }));
+            setContacts(contactsWithPhones);
         } catch (error) {
             console.error('There was a problem fetching the contacts:', error);
         }
@@ -93,13 +97,14 @@ function App() {
         .then(phone => {
             const newContacts = [...contacts];
             const contactIndex = newContacts.findIndex(contact => contact.contactId === contactId);
-            if(!newContacts[contactIndex].phones) {
-                newContacts[contactIndex].phones = []; // Ensure phones is an array
+            if (!newContacts[contactIndex].phones) {
+                newContacts[contactIndex].phones = [];
             }
             newContacts[contactIndex].phones.push(phone);
             setContacts(newContacts);
         });
     };
+    
     
     const deletePhoneNumber = (contactId, phoneId) => {
         fetch(`http://localhost:5006/api/contacts/${contactId}/phones/${phoneId}`, {
