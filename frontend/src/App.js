@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import { renderContacts } from './Components/Contactor';
 import Header from './Components/Header';
 import Stats from './Stats';
-import { renderContacts } from './Components/Contactor';
 
 function App() {
     const [contacts, setContacts] = useState([]);
@@ -73,23 +73,16 @@ function App() {
     };
     
 
-    const deleteContact = (index) => {
-        const contactId = contacts[index].id;
+    const deleteContact = (contactId) => {
         fetch(`http://localhost:5006/api/contacts/${contactId}`, {
             method: 'DELETE'
         })
         .then(() => {
-            setContacts(prevContacts => {
-                const newContacts = [...prevContacts];
-                newContacts.splice(index, 1);
-                return newContacts;
-            });
+            setContacts(prevContacts => prevContacts.filter(contact => contact.contactId !== contactId));
         });
     };
     
-
-    const addPhoneNumber = (index, type, number) => {
-        const contactId = contacts[index].id;
+    const addPhoneNumber = (contactId, type, number) => {
         fetch(`http://localhost:5006/api/contacts/${contactId}/phones`, {
             method: 'POST',
             headers: {
@@ -100,20 +93,20 @@ function App() {
         .then(response => response.json())
         .then(phone => {
             const newContacts = [...contacts];
-            newContacts[index].phones.push(phone);
+            const contactIndex = newContacts.findIndex(contact => contact.contactId === contactId);
+            newContacts[contactIndex].phones.push(phone);
             setContacts(newContacts);
         });
     };
-
-    const deletePhoneNumber = (contactIndex, phoneIndex) => {
-        const contactId = contacts[contactIndex].id;
-        const phoneId = contacts[contactIndex].phones[phoneIndex].id;
+    
+    const deletePhoneNumber = (contactId, phoneId) => {
         fetch(`http://localhost:5006/api/contacts/${contactId}/phones/${phoneId}`, {
             method: 'DELETE'
         })
         .then(() => {
             const newContacts = [...contacts];
-            newContacts[contactIndex].phones.splice(phoneIndex, 1);
+            const contactIndex = newContacts.findIndex(contact => contact.contactId === contactId);
+            newContacts[contactIndex].phones = newContacts[contactIndex].phones.filter(phone => phone.phoneId !== phoneId);
             setContacts(newContacts);
         });
     };
