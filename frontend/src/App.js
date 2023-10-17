@@ -174,7 +174,7 @@ function App() {
                 {showStats && <Stats stats={stats} />}
             </div>
         </div>
-    );    
+    );
 }
 
 export default App;
