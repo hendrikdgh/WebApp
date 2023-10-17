@@ -105,7 +105,6 @@ function App() {
         });
     };
     
-    
     const deletePhoneNumber = (contactId, phoneId) => {
         fetch(`http://localhost:5006/api/contacts/${contactId}/phones/${phoneId}`, {
             method: 'DELETE'
