@@ -94,7 +94,6 @@ function App() {
         })
         .then(() => {
             setContacts(prevContacts => prevContacts.filter(contact => contact.contactId !== contactId));
-            fetchStats();  // Refresh stats after deleting the contact
         });
     };
     
