@@ -88,11 +88,13 @@ function App() {
             }
         }
 
+        // Delete the contact itself
         fetch(`http://localhost:5006/api/contacts/${contactId}`, {
             method: 'DELETE'
         })
         .then(() => {
             setContacts(prevContacts => prevContacts.filter(contact => contact.contactId !== contactId));
+            fetchStats();  // Refresh stats after deleting the contact
         });
     };
     
