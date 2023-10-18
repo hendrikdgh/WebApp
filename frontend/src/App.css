@@ -117,8 +117,32 @@ h2 {
 }
 
 .phone-section {
-    border: 1px solid #898452;
     padding: 10px;
     margin: 10px 0;
     border-radius: 4px;
+}
+
+table {
+    width: 80%;  /* Set to desired width, e.g. 100%, 80% */
+    margin-top: 15px;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+table th, table td {
+    border: 2px solid #c8a289;
+    padding: 8px 12px;
+}
+
+table th {
+    background-color: rgb(140, 107, 50);
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: #f2f2f2
+}
+
+table tr:hover {
+    background-color: #ddd;
 }

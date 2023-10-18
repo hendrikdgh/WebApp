@@ -112,7 +112,7 @@ function App() {
         .then(() => {
             const newContacts = [...contacts];
             const contactIndex = newContacts.findIndex(contact => contact.contactId === contactId);
-            newContacts[contactIndex].phones = newContacts[contactIndex].phones ? 
+            newContacts[contactIndex].phones = newContacts[contactIndex].phones ?
                 newContacts[contactIndex].phones.filter(phone => phone.phoneId !== phoneId) :
                 [];
             setContacts(newContacts);
