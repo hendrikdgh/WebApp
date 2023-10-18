@@ -19,26 +19,28 @@ export function renderContacts(contacts, setSelectedContact, selectedContact, de
                             <button onClick={() => addPhoneNumber(contactId, document.getElementById(`type-input-${contactId}`).value, document.getElementById(`phone-input-${contactId}`).value)}>Add</button>
                         </div>
                     )}
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Phone Type</th>
-                                <th>Phone Number</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {contact.phones?.map(phone => (
-                                <tr key={phone.phoneId}>
-                                    <td>{phone.type}</td>
-                                    <td>{phone.phone_number}</td>
-                                    <td>
-                                        <button onClick={() => deletePhoneNumber(contact.contactId, phone.phoneId)}>Delete</button>
-                                    </td>
+                    {contact.phones && contact.phones.length > 0 && (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Phone Type</th>
+                                    <th>Phone Number</th>
+                                    <th></th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {contact.phones.map(phone => (
+                                    <tr key={phone.phoneId}>
+                                        <td>{phone.type}</td>
+                                        <td>{phone.phone_number}</td>
+                                        <td>
+                                            <button onClick={() => deletePhoneNumber(contact.contactId, phone.phoneId)}>Delete</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
             </div>
         );

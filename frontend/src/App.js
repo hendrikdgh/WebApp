@@ -76,7 +76,18 @@ function App() {
     };
     
 
-    const deleteContact = (contactId) => {
+    const deleteContact = async (contactId) => {
+        const contact = contacts.find(c => c.contactId === contactId);
+        
+        // If the contact has associated phone numbers, delete them first
+        if (contact && contact.phones && contact.phones.length > 0) {
+            for (let phone of contact.phones) {
+                await fetch(`http://localhost:5006/api/contacts/${contactId}/phones/${phone.phoneId}`, {
+                    method: 'DELETE'
+                });
+            }
+        }
+
         fetch(`http://localhost:5006/api/contacts/${contactId}`, {
             method: 'DELETE'
         })
@@ -84,6 +95,8 @@ function App() {
             setContacts(prevContacts => prevContacts.filter(contact => contact.contactId !== contactId));
         });
     };
+    
+    
     
     const addPhoneNumber = (contactId, type, phone_number) => {
         fetch(`http://localhost:5006/api/contacts/${contactId}/phones/`, {
